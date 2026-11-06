@@ -4,21 +4,28 @@ from datetime import datetime, timezone
 from urllib.parse import quote
 from uuid import UUID, uuid4
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Form, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
 from pydantic import BaseModel
 
 
 
 from file_storage import FileMeta, FileStorage
 
+
+load_dotenv()
+
 app = FastAPI(title="File Storage")
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(CORSMiddleware,
-                   allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:4000").split(","),
+                   allow_origins=origins,
                    allow_methods=["*"],
                    allow_headers=["*"])
 store = FileStorage(os.getenv("FILES_DB", "files.db"))
 
+logger.info(f"Using CORS:{origins}")
 
 class MetaUpdate(BaseModel):
     pid: int | None = None
