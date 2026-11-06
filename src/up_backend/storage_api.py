@@ -83,4 +83,5 @@ async def delete(fid: UUID) -> None:
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    port = os.getenv("PORT", 8001)
+    uvicorn.run(app, host="127.0.0.1", port=int(port))
